@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>試算表（Spreadsheet）函數大挑戰 - 40題互動測驗</title>
+    <style>
+        :root {
+            --primary-color: #2b579a; /* 試算表/Excel 經典藍 */
+            --primary-hover: #1e3f6f;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --success-color: #2e7d32;
+            --error-color: #c62828;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 2.5rem 1rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+        }
+        header p {
+            margin: 0.6rem 0 0 0;
+            font-size: 1.15rem;
+            opacity: 0.95;
+        }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1.2rem;
+        }
+        .intro-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary-color);
+        }
+        .intro-card h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .intro-card ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        .intro-card li {
+            margin-bottom: 0.5rem;
+        }
+        .question-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+        }
+        .q-header {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eeeeee;
+            padding-bottom: 0.6rem;
+        }
+        .q-num {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 0.6rem;
+            font-size: 0.95rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .q-text {
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+        code {
+            background-color: #f1f3f4;
+            color: #d81b60;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Courier New", Courier, monospace;
+            font-weight: bold;
+        }
+        .data-table {
+            background-color: #f8f9fa;
+            border-collapse: collapse;
+            margin: 1.2rem 0;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.95rem;
+            width: 100%;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #dddddd;
+            padding: 8px 14px;
+            text-align: left;
+        }
+        .data-table tr:first-child {
+            background-color: #e9ecef;
+            font-weight: bold;
+            color: #495057;
+        }
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 1.2rem 0;
+        }
+        .option-item {
+            margin-bottom: 0.6rem;
+        }
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.2rem;
+            border: 1px solid #cccccc;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+            font-size: 1rem;
+        }
+        .option-label:hover {
+            background-color: #f1f3f7;
+            border-color: var(--primary-color);
+        }
+        .option-label input {
+            margin-right: 0.8rem;
+            transform: scale(1.15);
+            cursor: pointer;
+        }
+        /* 提交後的動態著色狀態 */
+        .option-correct {
+            background-color: #e8f5e9 !important;
+            border-color: var(--success-color) !important;
+            color: var(--success-color) !important;
+            font-weight: bold;
+        }
+        .option-incorrect {
+            background-color: #ffebee !important;
+            border-color: var(--error-color) !important;
+            color: var(--error-color) !important;
+            text-decoration: line-through;
+        }
+        .explanation-box {
+            display: none;
+            margin-top: 1.2rem;
+            padding: 1.2rem;
+            border-radius: var(--border-radius);
+            background-color: #f1f8e9;
+            border-left: 5px solid var(--success-color);
+            font-size: 0.95rem;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .explanation-box.show {
+            display: block;
+        }
+        .explanation-box .exp-title {
+            font-weight: bold;
+            color: var(--success-color);
+            margin-bottom: 0.4rem;
+            font-size: 1.05rem;
+        }
+        .submit-area {
+            text-align: center;
+            margin: 3.5rem 0;
+        }
+        .btn-submit {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1.1rem 3.5rem;
+            font-size: 1.25rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: background-color 0.2s, transform 0.1s;
+            font-weight: bold;
+        }
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+        /* 結果評分診斷看板 */
+        #result-card {
+            display: none;
+            background: linear-gradient(135deg, #ffffff, #f1f3f7);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--primary-color);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .score-display {
+            font-size: 2.2rem;
+            font-weight: bold;
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 1.8rem;
+        }
+        .score-display span {
+            font-size: 3.2rem;
+            color: var(--success-color);
+        }
+        .feedback-title {
+            font-weight: bold;
+            font-size: 1.25rem;
+            margin-bottom: 0.8rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.4rem;
+            color: #1e3f6f;
+        }
+        .topic-list {
+            margin: 0;
+            padding-left: 1.2rem;
+            list-style: none;
+        }
+        .topic-list li {
+            margin-bottom: 0.8rem;
+            font-size: 1.05rem;
+        }
+        .badge-warning {
+            background-color: #ff9800;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-right: 0.6rem;
+        }
+        .badge-success {
+            background-color: var(--success-color);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-right: 0.6rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>試算表（Spreadsheet）函數大挑戰</h1>
+        <p>40題互動測驗：全面測試您的函數掌握度與相對/絕對參照觀念</p>
+    </header>
+
+    <div class="container">
+        <div class="intro-card">
+            <h3>📝 測驗說明</h3>
+            <ul>
+                <li>本測驗共包含 <strong>40 題</strong> 多項選擇題，涵蓋試算表中常用的基本與進階函數、相對/絕對參照與樞紐分析表。</li>
+                <li>每一題均提供視覺化模擬資料表，協助您進行直觀推理。</li>
+                <li>點選您的答案，並在拉到最底部時點擊<strong>「提交測驗」</strong>按鈕。</li>
+                <li>提交後，系統將實時為您評分，標示所有題目的正確解答、提供詳細解釋，並分析出<strong>您需要加強的特定函數領域</strong>！</li>
+            </ul>
+        </div>
+
+        <div id="result-card">
+            <div class="score-display">您的總分：<span id="score-val">0</span> / 40 </div>
+            <div id="weakness-analysis">
+                <!-- 由 JavaScript 動態生成診斷報告 -->
+            </div>
+        </div>
+
+        <form id="quiz-form">
+            <!-- 題目區域開始 -->
+            
+            <!-- 第 1 題 -->
+            <div class="question-card" id="q-card-1">
+                <div class="q-header">
+                    <span class="q-num">1</span>
+                    <span>SUM 函數與基本運算</span>
+                </div>
+                <div class="q-text">在 B5 儲存格輸入公式 <code>=SUM(B2:B4)</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td></tr>
+                    <tr><td>1</td><td>產品</td><td>銷售量</td></tr>
+                    <tr><td>2</td><td>蘋果</td><td>100</td></tr>
+                    <tr><td>3</td><td>橙</td><td>80</td></tr>
+                    <tr><td>4</td><td>梨</td><td>120</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-1-0"><input type="radio" name="q1" value="0" required><span>A. 200</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-1-1"><input type="radio" name="q1" value="1"><span>B. 300</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-1-2"><input type="radio" name="q1" value="2"><span>C. "蘋果橙梨"</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-1-3"><input type="radio" name="q1" value="3"><span>D. #VALUE!</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-1">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>SUM 函數會將指定範圍內的數值相加 (100 + 80 + 120 = 300)。</div>
+                </div>
+            </div>
+
+            <!-- 第 2 題 -->
+            <div class="question-card" id="q-card-2">
+                <div class="q-header">
+                    <span class="q-num">2</span>
+                    <span>AVERAGE 函數</span>
+                </div>
+                <div class="q-text">在 B5 儲存格輸入公式 <code>=AVERAGE(B2:B4)</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td></tr>
+                    <tr><td>1</td><td>學生</td><td>分數</td></tr>
+                    <tr><td>2</td><td>陳大文</td><td>88</td></tr>
+                    <tr><td>3</td><td>張小明</td><td>95</td></tr>
+                    <tr><td>4</td><td>李麗</td><td>72</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-2-0"><input type="radio" name="q2" value="0" required><span>A. 85</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-2-1"><input type="radio" name="q2" value="1"><span>B. 88</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-2-2"><input type="radio" name="q2" value="2"><span>C. 95</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-2-3"><input type="radio" name="q2" value="3"><span>D. 255</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-2">
+                    <div class="exp-title">🔑 正確解答：A</div>
+                    <div>AVERAGE 函數會計算指定範圍內數字的平均值 ((88 + 95 + 72) / 3 = 85)。</div>
+                </div>
+            </div>
+
+            <!-- 第 3 題 -->
+            <div class="question-card" id="q-card-3">
+                <div class="q-header">
+                    <span class="q-num">3</span>
+                    <span>MAX 函數</span>
+                </div>
+                <div class="q-text">在 A5 儲存格輸入公式 <code>=MAX(A1:A4)</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td></tr>
+                    <tr><td>1</td><td>95</td></tr>
+                    <tr><td>2</td><td>78</td></tr>
+                    <tr><td>3</td><td>100</td></tr>
+                    <tr><td>4</td><td>65</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-3-0"><input type="radio" name="q3" value="0" required><span>A. 65</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-3-1"><input type="radio" name="q3" value="1"><span>B. 95</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-3-2"><input type="radio" name="q3" value="2"><span>C. 100</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-3-3"><input type="radio" name="q3" value="3"><span>D. 4</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-3">
+                    <div class="exp-title">🔑 正確解答：C</div>
+                    <div>MAX 函數會傳回指定範圍內的最大值 (100)。</div>
+                </div>
+            </div>
+
+            <!-- 第 4 題 -->
+            <div class="question-card" id="q-card-4">
+                <div class="q-header">
+                    <span class="q-num">4</span>
+                    <span>MIN 函數</span>
+                </div>
+                <div class="q-text">在 A5 儲存格輸入公式 <code>=MIN(A1:A4)</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td></tr>
+                    <tr><td>1</td><td>95</td></tr>
+                    <tr><td>2</td><td>78</td></tr>
+                    <tr><td>3</td><td>100</td></tr>
+                    <tr><td>4</td><td>65</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-4-0"><input type="radio" name="q4" value="0" required><span>A. 65</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-4-1"><input type="radio" name="q4" value="1"><span>B. 78</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-4-2"><input type="radio" name="q4" value="2"><span>C. 100</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-4-3"><input type="radio" name="q4" value="3"><span>D. 95</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-4">
+                    <div class="exp-title">🔑 正確解答：A</div>
+                    <div>MIN 函數會傳回指定範圍內的最小值 (65)。</div>
+                </div>
+            </div>
+
+            <!-- 第 5 題 -->
+            <div class="question-card" id="q-card-5">
+                <div class="q-header">
+                    <span class="q-num">5</span>
+                    <span>COUNT 函數</span>
+                </div>
+                <div class="q-text">在 B6 儲存格輸入公式 <code>=COUNT(B2:B5)</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td></tr>
+                    <tr><td>1</td><td>項目</td><td>數量</td></tr>
+                    <tr><td>2</td><td>筆</td><td>10</td></tr>
+                    <tr><td>3</td><td>擦膠</td><td>&nbsp;</td></tr>
+                    <tr><td>4</td><td>尺</td><td>15</td></tr>
+                    <tr><td>5</td><td>書</td><td>8</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-5-0"><input type="radio" name="q5" value="0" required><span>A. 4</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-5-1"><input type="radio" name="q5" value="1"><span>B. 3</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-5-2"><input type="radio" name="q5" value="2"><span>C. 2</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-5-3"><input type="radio" name="q5" value="3"><span>D. #N/A</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-5">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>COUNT 函數只會計算範圍內包含「數字」的儲存格數量。B3 是空白，因此計數結果為 3。許多學生會誤以為它計算所有非空儲存格。</div>
+                </div>
+            </div>
+
+            <!-- 第 6 題 -->
+            <div class="question-card" id="q-card-6">
+                <div class="q-header">
+                    <span class="q-num">6</span>
+                    <span>SUMIF 函數</span>
+                </div>
+                <div class="q-text">在 C1 儲存格輸入公式 <code>=SUMIF(A2:A5, "電視", B2:B5)</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td></tr>
+                    <tr><td>1</td><td>產品</td><td>銷售額</td></tr>
+                    <tr><td>2</td><td>電視</td><td>5000</td></tr>
+                    <tr><td>3</td><td>冰箱</td><td>8000</td></tr>
+                    <tr><td>4</td><td>電視</td><td>6500</td></tr>
+                    <tr><td>5</td><td>洗衣機</td><td>7000</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-6-0"><input type="radio" name="q6" value="0" required><span>A. 5000</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-6-1"><input type="radio" name="q6" value="1"><span>B. 11500</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-6-2"><input type="radio" name="q6" value="2"><span>C. 13000</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-6-3"><input type="radio" name="q6" value="3"><span>D. 26500</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-6">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>SUMIF 函數會篩選符合 A 欄為 "電視" 的列，並將對應 B 欄的數值相加 (5000 + 6500 = 11500)。</div>
+                </div>
+            </div>
+
+            <!-- 第 7 題 -->
+            <div class="question-card" id="q-card-7">
+                <div class="q-header">
+                    <span class="q-num">7</span>
+                    <span>COUNTIF 函數</span>
+                </div>
+                <div class="q-text">在 C1 儲存格輸入公式 <code>=COUNTIF(A2:A5, "九龍")</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td></tr>
+                    <tr><td>1</td><td>地區</td><td>銷售點</td></tr>
+                    <tr><td>2</td><td>香港</td><td>5</td></tr>
+                    <tr><td>3</td><td>九龍</td><td>8</td></tr>
+                    <tr><td>4</td><td>新界</td><td>12</td></tr>
+                    <tr><td>5</td><td>九龍</td><td>6</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-7-0"><input type="radio" name="q7" value="0" required><span>A. 1</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-7-1"><input type="radio" name="q7" value="1"><span>B. 2</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-7-2"><input type="radio" name="q7" value="2"><span>C. 8</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-7-3"><input type="radio" name="q7" value="3"><span>D. 14</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-7">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>COUNTIF 函數計算範圍內符合特定條件（"九龍"）的儲存格數量，在此範圍內有 2 個九龍，故結果為 2。選項 D 為符合條件的銷售點加總，是 SUMIF 的功能。</div>
+                </div>
+            </div>
+
+            <!-- 第 8 題 -->
+            <div class="question-card" id="q-card-8">
+                <div class="q-header">
+                    <span class="q-num">8</span>
+                    <span>ROUND 函數</span>
+                </div>
+                <div class="q-text">在 A1 儲存格輸入公式 <code>=ROUND(123.456, 1)</code>，會得到什麼結果？</div>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-8-0"><input type="radio" name="q8" value="0" required><span>A. 123</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-8-1"><input type="radio" name="q8" value="1"><span>B. 123.4</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-8-2"><input type="radio" name="q8" value="2"><span>C. 123.5</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-8-3"><input type="radio" name="q8" value="3"><span>D. 123.46</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-8">
+                    <div class="exp-title">🔑 正確解答：C</div>
+                    <div>ROUND 函數會將數字四捨五入到指定的小數位數。由於第二位小數是 5，因此向第一位進位，結果為 123.5。</div>
+                </div>
+            </div>
+
+            <!-- 第 9 題 -->
+            <div class="question-card" id="q-card-9">
+                <div class="q-header">
+                    <span class="q-num">9</span>
+                    <span>INT 函數</span>
+                </div>
+                <div class="q-text">在 A1 儲存格輸入公式 <code>=INT(99.99)</code>，會得到什麼結果？</div>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-9-0"><input type="radio" name="q9" value="0" required><span>A. 99</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-9-1"><input type="radio" name="q9" value="1"><span>B. 100</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-9-2"><input type="radio" name="q9" value="2"><span>C. 99.9</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-9-3"><input type="radio" name="q9" value="3"><span>D. 0.99</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-9">
+                    <div class="exp-title">🔑 正確解答：A</div>
+                    <div>INT 函數會無條件捨去所有小數部分，只保留整數部分，因此得到 99。常見錯誤是以為會像 ROUND 一樣進位到 100。</div>
+                </div>
+            </div>
+
+            <!-- 第 10 題 -->
+            <div class="question-card" id="q-card-10">
+                <div class="q-header">
+                    <span class="q-num">10</span>
+                    <span>SQRT 函數</span>
+                </div>
+                <div class="q-text">在 A1 儲存格輸入公式 <code>=SQRT(64)</code>，會得到什麼結果？</div>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-10-0"><input type="radio" name="q10" value="0" required><span>A. 4</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-10-1"><input type="radio" name="q10" value="1"><span>B. 8</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-10-2"><input type="radio" name="q10" value="2"><span>C. 16</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-10-3"><input type="radio" name="q10" value="3"><span>D. 32</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-10">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>SQRT 函數用於計算一個正數的平方根，8 * 8 = 64，故其平方根為 8。</div>
+                </div>
+            </div>
+
+            <!-- 第 11 題 -->
+            <div class="question-card" id="q-card-11">
+                <div class="q-header">
+                    <span class="q-num">11</span>
+                    <span>IF 函數</span>
+                </div>
+                <div class="q-text">在 C1 儲存格輸入公式 <code>=IF(B1>=60, "合格", "不合格")</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td></tr>
+                    <tr><td>1</td><td>成績</td><td>55</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-11-0"><input type="radio" name="q11" value="0" required><span>A. 合格</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-11-1"><input type="radio" name="q11" value="1"><span>B. 不合格</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-11-2"><input type="radio" name="q11" value="2"><span>C. TRUE</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-11-3"><input type="radio" name="q11" value="3"><span>D. FALSE</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-11">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>B1 (55) 大於或等於 60 的邏輯結果為 FALSE。因此 IF 函數返回第三個參數（不成立時的返回值）"不合格"。</div>
+                </div>
+            </div>
+
+            <!-- 第 12 題 -->
+            <div class="question-card" id="q-card-12">
+                <div class="q-header">
+                    <span class="q-num">12</span>
+                    <span>AND 邏輯運算</span>
+                </div>
+                <div class="q-text">在 A1 儲存格輸入公式 <code>=AND(5>3, 10<20)</code>，會得到什麼結果？</div>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-12-0"><input type="radio" name="q12" value="0" required><span>A. TRUE</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-12-1"><input type="radio" name="q12" value="1"><span>B. FALSE</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-12-2"><input type="radio" name="q12" value="2"><span>C. 5>3</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-12-3"><input type="radio" name="q12" value="3"><span>D. 10<20</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-12">
+                    <div class="exp-title">🔑 正確解答：A</div>
+                    <div>AND 函數在其包含的所有邏輯條件均為 TRUE 時才會返回 TRUE。由於 5>3 為真且 10&lt;20 為真，故最終返回 TRUE。</div>
+                </div>
+            </div>
+
+            <!-- 第 13 題 -->
+            <div class="question-card" id="q-card-13">
+                <div class="q-header">
+                    <span class="q-num">13</span>
+                    <span>OR 邏輯運算</span>
+                </div>
+                <div class="q-text">在 A1 儲存格輸入公式 <code>=OR(5>10, 10<20)</code>，會得到什麼結果？</div>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-13-0"><input type="radio" name="q13" value="0" required><span>A. TRUE</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-13-1"><input type="radio" name="q13" value="1"><span>B. FALSE</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-13-2"><input type="radio" name="q13" value="2"><span>C. #ERROR!</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-13-3"><input type="radio" name="q13" value="3"><span>D. 10<20</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-13">
+                    <div class="exp-title">🔑 正確解答：A</div>
+                    <div>OR 函數只要其中任何一個邏輯條件為 TRUE 就會返回 TRUE。雖然 5&gt;10 為假，但 10&lt;20 為真，故返回 TRUE。</div>
+                </div>
+            </div>
+
+            <!-- 第 14 題 -->
+            <div class="question-card" id="q-card-14">
+                <div class="q-header">
+                    <span class="q-num">14</span>
+                    <span>NOT 邏輯運算</span>
+                </div>
+                <div class="q-text">在 A1 儲存格輸入公式 <code>=NOT(10=10)</code>，會得到什麼結果？</div>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-14-0"><input type="radio" name="q14" value="0" required><span>A. TRUE</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-14-1"><input type="radio" name="q14" value="1"><span>B. FALSE</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-14-2"><input type="radio" name="q14" value="2"><span>C. 0</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-14-3"><input type="radio" name="q14" value="3"><span>D. 1</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-14">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>NOT 函數會將邏輯值反轉。因為 10=10 是 TRUE，經過 NOT 處理後會返回 FALSE。</div>
+                </div>
+            </div>
+
+            <!-- 第 15 題 -->
+            <div class="question-card" id="q-card-15">
+                <div class="q-header">
+                    <span class="q-num">15</span>
+                    <span>LEFT 函數</span>
+                </div>
+                <div class="q-text">在 B1 儲存格輸入公式 <code>=LEFT(A1, 4)</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td></tr>
+                    <tr><td>1</td><td>HongKong</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-15-0"><input type="radio" name="q15" value="0" required><span>A. Hong</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-15-1"><input type="radio" name="q15" value="1"><span>B. Kong</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-15-2"><input type="radio" name="q15" value="2"><span>C. gKon</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-15-3"><input type="radio" name="q15" value="3"><span>D. H</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-15">
+                    <div class="exp-title">🔑 正確解答：A</div>
+                    <div>LEFT 函數會從文字字串的左側（起點）提取指定數量的字元。A1 "HongKong" 的前 4 個字元即為 "Hong"。</div>
+                </div>
+            </div>
+
+            <!-- 第 16 題 -->
+            <div class="question-card" id="q-card-16">
+                <div class="q-header">
+                    <span class="q-num">16</span>
+                    <span>RIGHT 函數</span>
+                </div>
+                <div class="q-text">在 B1 儲存格輸入公式 <code>=RIGHT(A1, 4)</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td></tr>
+                    <tr><td>1</td><td>HongKong</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-16-0"><input type="radio" name="q16" value="0" required><span>A. Hong</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-16-1"><input type="radio" name="q16" value="1"><span>B. Kong</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-16-2"><input type="radio" name="q16" value="2"><span>C. gKon</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-16-3"><input type="radio" name="q16" value="3"><span>D. g</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-16">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>RIGHT 函數會從文字字串的右側（尾端）提取指定數量的字元。A1 "HongKong" 的最後 4 個字元即為 "Kong"。</div>
+                </div>
+            </div>
+
+            <!-- 第 17 題 -->
+            <div class="question-card" id="q-card-17">
+                <div class="q-header">
+                    <span class="q-num">17</span>
+                    <span>MID 函數</span>
+                </div>
+                <div class="q-text">在 B1 儲存格輸入公式 <code>=MID(A1, 5, 2)</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td></tr>
+                    <tr><td>1</td><td>HongKong</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-17-0"><input type="radio" name="q17" value="0" required><span>A. gK</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-17-1"><input type="radio" name="q17" value="1"><span>B. ongK</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-17-2"><input type="radio" name="q17" value="2"><span>C. Ko</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-17-3"><input type="radio" name="q17" value="3"><span>D. Kong</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-17">
+                    <div class="exp-title">🔑 正確解答：C</div>
+                    <div>MID 函數從指定的位置開始向右提取指定數量的字元。在此從第 5 個字元 "K" 開始提取 2 個字元，結果為 "Ko"。</div>
+                </div>
+            </div>
+
+            <!-- 第 18 題 -->
+            <div class="question-card" id="q-card-18">
+                <div class="q-header">
+                    <span class="q-num">18</span>
+                    <span>LEN 函數</span>
+                </div>
+                <div class="q-text">在 B1 儲存格輸入公式 <code>=LEN(A1)</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td></tr>
+                    <tr><td>1</td><td>Hello World</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-18-0"><input type="radio" name="q18" value="0" required><span>A. 10</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-18-1"><input type="radio" name="q18" value="1"><span>B. 11</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-18-2"><input type="radio" name="q18" value="2"><span>C. 2</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-18-3"><input type="radio" name="q18" value="3"><span>D. "Hello World"</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-18">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>LEN 函數會計算並返回文字字串中的字元總數。中間的空格（Space）同樣是一個有效字元，必須計入長度，共 11 個字元。</div>
+                </div>
+            </div>
+
+            <!-- 第 19 題 -->
+            <div class="question-card" id="q-card-19">
+                <div class="q-header">
+                    <span class="q-num">19</span>
+                    <span>FIND 函數</span>
+                </div>
+                <div class="q-text">在 B1 儲存格輸入公式 <code>=FIND("-", A1)</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td></tr>
+                    <tr><td>1</td><td>Data-Analysis</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-19-0"><input type="radio" name="q19" value="0" required><span>A. 4</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-19-1"><input type="radio" name="q19" value="1"><span>B. 5</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-19-2"><input type="radio" name="q19" value="2"><span>C. "Analysis"</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-19-3"><input type="radio" name="q19" value="3"><span>D. #VALUE!</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-19">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>FIND 函數用於搜尋特定字元在字串中首次出現的起始位置編號（從 1 開始計）。連字號 "-" 位於第 5 位。</div>
+                </div>
+            </div>
+
+            <!-- 第 20 題 -->
+            <div class="question-card" id="q-card-20">
+                <div class="q-header">
+                    <span class="q-num">20</span>
+                    <span>RANK 函數</span>
+                </div>
+                <div class="q-text">在 B2 儲存格輸入公式 <code>=RANK(A2, A$2:A$5)</code> 並向下複製到 B3:B5，B4 儲存格會顯示什麼？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td></tr>
+                    <tr><td>1</td><td>分數</td><td>排名</td></tr>
+                    <tr><td>2</td><td>92</td><td>&nbsp;</td></tr>
+                    <tr><td>3</td><td>85</td><td>&nbsp;</td></tr>
+                    <tr><td>4</td><td>92</td><td>&nbsp;</td></tr>
+                    <tr><td>5</td><td>76</td><td>&nbsp;</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-20-0"><input type="radio" name="q20" value="0" required><span>A. 1</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-20-1"><input type="radio" name="q20" value="1"><span>B. 2</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-20-2"><input type="radio" name="q20" value="2"><span>C. 3</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-20-3"><input type="radio" name="q20" value="3"><span>D. #N/A</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-20">
+                    <div class="exp-title">🔑 正確解答：A</div>
+                    <div>RANK 函數用於計算某數在一個範圍內的排名（預設為遞減排序，即最大值為第 1 名）。A2 與 A4 同為 92，均為該組最高分，故兩者排名皆為 1。而 A3 的 85 會被排在第 3 名（跳過 2）。</div>
+                </div>
+            </div>
+
+            <!-- 第 21 題 -->
+            <div class="question-card" id="q-card-21">
+                <div class="q-header">
+                    <span class="q-num">21</span>
+                    <span>RAND 函數與取整組合</span>
+                </div>
+                <div class="q-text">哪一個公式可以產生一個 0 到 99 之間的隨機整數（包含 0 和 99）？</div>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-21-0"><input type="radio" name="q21" value="0" required><span>A. =INT(RAND()*100)</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-21-1"><input type="radio" name="q21" value="1"><span>B. =RAND()*99</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-21-2"><input type="radio" name="q21" value="2"><span>C. =ROUND(RAND(), 99)</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-21-3"><input type="radio" name="q21" value="3"><span>D. =INT(RAND()*99)</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-21">
+                    <div class="exp-title">🔑 正確解答：A</div>
+                    <div>RAND() 產生大於或等於 0 且小於 1 的隨機浮點數 [0, 1)。乘以 100 後其數值範圍變為 [0, 100)。最後經由 INT 無條件捨去小數點，即可產生 0 到 99 的隨機整數。若乘以 99 再用 INT 則最大只能取得 98。</div>
+                </div>
+            </div>
+
+            <!-- 第 22 題 -->
+            <div class="question-card" id="q-card-22">
+                <div class="q-header">
+                    <span class="q-num">22</span>
+                    <span>XLOOKUP 函數基礎</span>
+                </div>
+                <div class="q-text">在 E1 儲存格輸入 <code>=XLOOKUP("S002", A2:A4, C2:C4)</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td><td>C</td><td>D</td></tr>
+                    <tr><td>1</td><td>學號</td><td>姓名</td><td>英文</td><td>中文</td></tr>
+                    <tr><td>2</td><td>S001</td><td>Alice</td><td>88</td><td>92</td></tr>
+                    <tr><td>3</td><td>S002</td><td>Bob</td><td>75</td><td>80</td></tr>
+                    <tr><td>4</td><td>S003</td><td>Carol</td><td>95</td><td>85</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-22-0"><input type="radio" name="q22" value="0" required><span>A. Bob</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-22-1"><input type="radio" name="q22" value="1"><span>B. 75</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-22-2"><input type="radio" name="q22" value="2"><span>C. 80</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-22-3"><input type="radio" name="q22" value="3"><span>D. #N/A</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-22">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>XLOOKUP 在搜尋範圍 A2:A4 查找關鍵字 "S002"，並從回傳範圍 C2:C4（英文成績）的同一列回傳對應值，即 Bob 的英文分數 75。</div>
+                </div>
+            </div>
+
+            <!-- 第 23 題 -->
+            <div class="question-card" id="q-card-23">
+                <div class="q-header">
+                    <span class="q-num">23</span>
+                    <span>XLOOKUP 找不到時的回傳處理</span>
+                </div>
+                <div class="q-text">在 E1 儲存格輸入 <code>=XLOOKUP("S004", A2:A4, B2:B4, "找不到")</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td><td>C</td><td>D</td></tr>
+                    <tr><td>1</td><td>學號</td><td>姓名</td><td>英文</td><td>中文</td></tr>
+                    <tr><td>2</td><td>S001</td><td>Alice</td><td>88</td><td>92</td></tr>
+                    <tr><td>3</td><td>S002</td><td>Bob</td><td>75</td><td>80</td></tr>
+                    <tr><td>4</td><td>S003</td><td>Carol</td><td>95</td><td>85</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-23-0"><input type="radio" name="q23" value="0" required><span>A. #N/A</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-23-1"><input type="radio" name="q23" value="1"><span>B. #REF!</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-23-2"><input type="radio" name="q23" value="2"><span>C. 0</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-23-3"><input type="radio" name="q23" value="3"><span>D. 找不到</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-23">
+                    <div class="exp-title">🔑 正確解答：D</div>
+                    <div>XLOOKUP 的第四個參數是當找不到匹配項目的指定回傳值。由於學號中沒有 "S004"，故直接返回自訂文字 "找不到" 而非報錯。</div>
+                </div>
+            </div>
+
+            <!-- 第 24 題 -->
+            <div class="question-card" id="q-card-24">
+                <div class="q-header">
+                    <span class="q-num">24</span>
+                    <span>ROUND 臨界值 .5 的處理</span>
+                </div>
+                <div class="q-text">在 A1 儲存格輸入公式 <code>=ROUND(2.5, 0)</code>，會得到什麼結果？</div>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-24-0"><input type="radio" name="q24" value="0" required><span>A. 2</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-24-1"><input type="radio" name="q24" value="1"><span>B. 3</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-24-2"><input type="radio" name="q24" value="2"><span>C. 2.5</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-24-3"><input type="radio" name="q24" value="3"><span>D. 2.0</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-24">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>ROUND 在處理小數點後為 .5 時會向上進位。2.5 捨入到 0 位小數會變成 3。</div>
+                </div>
+            </div>
+
+            <!-- 第 25 題 -->
+            <div class="question-card" id="q-card-25">
+                <div class="q-header">
+                    <span class="q-num">25</span>
+                    <span>AVERAGE 忽略非數值單格</span>
+                </div>
+                <div class="q-text">在 B1 儲存格輸入公式 <code>=AVERAGE(A2:A5)</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td></tr>
+                    <tr><td>1</td><td>數值</td></tr>
+                    <tr><td>2</td><td>10</td></tr>
+                    <tr><td>3</td><td>20</td></tr>
+                    <tr><td>4</td><td>"N/A"</td></tr>
+                    <tr><td>5</td><td>30</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-25-0"><input type="radio" name="q25" value="0" required><span>A. 15</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-25-1"><input type="radio" name="q25" value="1"><span>B. 20</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-25-2"><input type="radio" name="q25" value="2"><span>C. 60</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-25-3"><input type="radio" name="q25" value="3"><span>D. #VALUE!</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-25">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>AVERAGE 在計算平均值時會自動跳過/忽略文字單格。因此 A4 內的文字 "N/A" 不參與計算。結果為 (10+20+30)/3 = 20。</div>
+                </div>
+            </div>
+
+            <!-- 第 26 題 -->
+            <div class="question-card" id="q-card-26">
+                <div class="q-header">
+                    <span class="q-num">26</span>
+                    <span>文字型數字隱式轉換</span>
+                </div>
+                <div class="q-text">在 A1 儲存格中輸入具有「文字格式」的 "20"（靠左對齊），在 A2 輸入「數字格式」的 10（靠右對齊）。在 A3 輸入公式 <code>=A1+A2</code>，試算表會顯示什麼？</div>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-26-0"><input type="radio" name="q26" value="0" required><span>A. 30</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-26-1"><input type="radio" name="q26" value="1"><span>B. "2010"</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-26-2"><input type="radio" name="q26" value="2"><span>C. #VALUE!</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-26-3"><input type="radio" name="q26" value="3"><span>D. 10</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-26">
+                    <div class="exp-title">🔑 正確解答：A</div>
+                    <div>當使用加法運算符 `+` 時，試算表軟體會主動嘗試將「文字型數字」轉換為實際的數值進行運算。因此 "20" 會被自動視為 20，並與 10 相加得到 30。如果是用 SUM(A1:A2) 則會將文字 A1 忽略而得到 10！</div>
+                </div>
+            </div>
+
+            <!-- 第 27 題 -->
+            <div class="question-card" id="q-card-27">
+                <div class="q-header">
+                    <span class="q-num">27</span>
+                    <span>文字串連 & 運算符</span>
+                </div>
+                <div class="q-text">在 C2 儲存格輸入公式 <code>=A2 & " is " & B2 & " years old."</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td></tr>
+                    <tr><td>1</td><td>姓名</td><td>年齡</td></tr>
+                    <tr><td>2</td><td>Peter</td><td>25</td></tr>
+                    <tr><td>3</td><td>Mary</td><td>30</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-27-0"><input type="radio" name="q27" value="0" required><span>A. Peter is 25 years old.</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-27-1"><input type="radio" name="q27" value="1"><span>B. Peteris25yearsold.</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-27-2"><input type="radio" name="q27" value="2"><span>C. #NAME?</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-27-3"><input type="radio" name="q27" value="3"><span>D. A2 & " is " & B2 & " years old."</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-27">
+                    <div class="exp-title">🔑 正確解答：A</div>
+                    <div>運算符 `&` 用於串連不同的文字與儲存格數值，而雙引號之間的文字（包括空格）會原樣輸出。</div>
+                </div>
+            </div>
+
+            <!-- 第 28 題 -->
+            <div class="question-card" id="q-card-28">
+                <div class="q-header">
+                    <span class="q-num">28</span>
+                    <span>IF 嵌套 AND 條件</span>
+                </div>
+                <div class="q-text">在 C1 儲存格輸入公式 <code>=IF(AND(B1>80, B2>80), "Excellent", "Good")</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td></tr>
+                    <tr><td>1</td><td>數學</td><td>85</td></tr>
+                    <tr><td>2</td><td>英文</td><td>90</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-28-0"><input type="radio" name="q28" value="0" required><span>A. Excellent</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-28-1"><input type="radio" name="q28" value="1"><span>B. Good</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-28-2"><input type="radio" name="q28" value="2"><span>C. TRUE</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-28-3"><input type="radio" name="q28" value="3"><span>D. #ERROR!</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-28">
+                    <div class="exp-title">🔑 正確解答：A</div>
+                    <div>由於 B1 (85) 與 B2 (90) 皆大於 80，AND 函數傳回 TRUE。因此 IF 函數返回 TRUE 對應的第二個參數 "Excellent"。</div>
+                </div>
+            </div>
+
+            <!-- 第 29 題 -->
+            <div class="question-card" id="q-card-29">
+                <div class="q-header">
+                    <span class="q-num">29</span>
+                    <span>ROUND 負數四捨五入</span>
+                </div>
+                <div class="q-text">在 A1 儲存格輸入公式 <code>=ROUND(-1.8, 0)</code>，會得到什麼結果？</div>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-29-0"><input type="radio" name="q29" value="0" required><span>A. -1</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-29-1"><input type="radio" name="q29" value="1"><span>B. -2</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-29-2"><input type="radio" name="q29" value="2"><span>C. 1</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-29-3"><input type="radio" name="q29" value="3"><span>D. 2</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-29">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>ROUND 處理負數四捨五入時，同樣遵循向遠離零的方向捨入。-1.8 進位保留 0 位小數會變成 -2。</div>
+                </div>
+            </div>
+
+            <!-- 第 30 題 -->
+            <div class="question-card" id="q-card-30">
+                <div class="q-header">
+                    <span class="q-num">30</span>
+                    <span>SUMIF 不等於條件</span>
+                </div>
+                <div class="q-text">在 C1 儲存格輸入公式 <code>=SUMIF(A2:A4, "<>A", B2:B4)</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td></tr>
+                    <tr><td>1</td><td>類別</td><td>數量</td></tr>
+                    <tr><td>2</td><td>A</td><td>10</td></tr>
+                    <tr><td>3</td><td>B</td><td>20</td></tr>
+                    <tr><td>4</td><td>A</td><td>15</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-30-0"><input type="radio" name="q30" value="0" required><span>A. 10</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-30-1"><input type="radio" name="q30" value="1"><span>B. 15</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-30-2"><input type="radio" name="q30" value="2"><span>C. 20</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-30-3"><input type="radio" name="q30" value="3"><span>D. 25</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-30">
+                    <div class="exp-title">🔑 正確解答：C</div>
+                    <div>在試算表語法中，`&lt;&gt;` 代表「不等於（Not equal to）」。因此公式會篩選出 A 欄中「不等於 A」的所有列（即類別 B 的列），並加總其對應數量（20）。</div>
+                </div>
+            </div>
+
+            <!-- 第 31 題 -->
+            <div class="question-card" id="q-card-31">
+                <div class="q-header">
+                    <span class="q-num">31</span>
+                    <span>絕對列參照的橫向複製</span>
+                </div>
+                <div class="q-text">教師在 B4 儲存格輸入公式 <code>=B2 * C$2</code>，隨後他將此儲存格公式「向右複製」至 C4 儲存格。請問 C4 內的公式會變成什麼？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td><td>C</td></tr>
+                    <tr><td>1</td><td>產品</td><td>基礎價格</td><td>折扣率</td></tr>
+                    <tr><td>2</td><td>手錶</td><td>1200</td><td>0.9</td></tr>
+                    <tr><td>3</td><td>耳機</td><td>600</td><td>0.8</td></tr>
+                    <tr><td>4</td><td>實售價</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-31-0"><input type="radio" name="q31" value="0" required><span>A. =C2 * D$2</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-31-1"><input type="radio" name="q31" value="1"><span>B. =B2 * C$2</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-31-2"><input type="radio" name="q31" value="2"><span>C. =C2 * C$2</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-31-3"><input type="radio" name="q31" value="3"><span>D. =C2 * D$3</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-31">
+                    <div class="exp-title">🔑 正確解答：A</div>
+                    <div>向右複製（移動一欄）時，相對參照部分（B2）的欄字母會向右偏移一欄變成 C2。而在 `C$2` 中，雖然列號 2 被鎖定，但欄字母 C 沒有被鎖定，所以它同樣會偏移一欄變成 D，因此結果公式是 `=C2 * D$2`。</div>
+                </div>
+            </div>
+
+            <!-- 第 32 題 -->
+            <div class="question-card" id="q-card-32">
+                <div class="q-header">
+                    <span class="q-num">32</span>
+                    <span>混合參照與複製填滿</span>
+                </div>
+                <div class="q-text">我們想在 B2 輸入公式計算 A2 的值與 B1 的乘積。此公式必須要能直接向右及向下填滿複製到整個 B2:D4 區域且保持計算正確。應輸入什麼公式？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td><td>C</td><td>D</td></tr>
+                    <tr><td>1</td><td>乘數</td><td>10</td><td>20</td><td>30</td></tr>
+                    <tr><td>2</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                    <tr><td>3</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-32-0"><input type="radio" name="q32" value="0" required><span>A. =A2 * B1</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-32-1"><input type="radio" name="q32" value="1"><span>B. =$A$2 * $B$1</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-32-2"><input type="radio" name="q32" value="2"><span>C. =$A2 * B$1</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-32-3"><input type="radio" name="q32" value="3"><span>D. =A$2 * $B1</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-32">
+                    <div class="exp-title">🔑 正確解答：C</div>
+                    <div>當我們橫向複製公式時，希望它鎖定在 A 欄，即 `$A2`；當我們縱向複製公式時，希望它鎖定在第 1 列，即 `B$1`。兩者結合寫法為 `=$A2 * B$1`。</div>
+                </div>
+            </div>
+
+            <!-- 第 33 題 -->
+            <div class="question-card" id="q-card-33">
+                <div class="q-header">
+                    <span class="q-num">33</span>
+                    <span>相對參照與空白單格偵錯</span>
+                </div>
+                <div class="q-text">小華想在 C 欄計算每位學生的加權分數。他在 C2 輸入公式 <code>=B2 * C2</code>（其中 B2 是陳大文分數，C2 是權重 1.5），並直接下拉複製到 C3 和 C4。請問 C3 儲存格會顯示什麼？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td><td>C</td></tr>
+                    <tr><td>1</td><td>學生</td><td>分數</td><td>權重 (1.5)</td></tr>
+                    <tr><td>2</td><td>陳大文</td><td>80</td><td>1.5</td></tr>
+                    <tr><td>3</td><td>張小明</td><td>90</td><td>&nbsp;</td></tr>
+                    <tr><td>4</td><td>李美美</td><td>70</td><td>&nbsp;</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-33-0"><input type="radio" name="q33" value="0" required><span>A. 135</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-33-1"><input type="radio" name="q33" value="1"><span>B. 0 （或空白）</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-33-2"><input type="radio" name="q33" value="2"><span>C. 120</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-33-3"><input type="radio" name="q33" value="3"><span>D. #VALUE!</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-33">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>當向下複製一列時，公式自動變為 `=B3 * C3`。由於 B3 為張小明分數 (90) 但 C3 儲存格目前完全是空白（在數學運算中被軟體自動視為 0 處理），相乘後便得到 0 或顯示空白。正確的寫法應該是絕對參照鎖定權重：`=B2 * $C$2`。</div>
+                </div>
+            </div>
+
+            <!-- 第 34 題 -->
+            <div class="question-card" id="q-card-34">
+                <div class="q-header">
+                    <span class="q-num">34</span>
+                    <span>樞紐分析表欄位配置</span>
+                </div>
+                <div class="q-text">建立樞紐分析表時，如果左側列標籤顯示「分校」、上方橫向欄標籤顯示「課程類別」、中間交叉區域顯示「學費收入」的加總。請問正確的欄位拖放配置是什麼？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td><td>C</td></tr>
+                    <tr><td>1</td><td>分校</td><td>課程類別</td><td>學費收入</td></tr>
+                    <tr><td>2</td><td>荃灣分校</td><td>ICT課程</td><td>5000</td></tr>
+                    <tr><td>3</td><td>沙田分校</td><td>數學課程</td><td>4500</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-34-0"><input type="radio" name="q34" value="0" required><span>A. 列 (Rows)：分校； 欄 (Columns)：課程類別； 值 (Values)：加總 - 學費收入</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-34-1"><input type="radio" name="q34" value="1"><span>B. 列 (Rows)：課程類別； 欄 (Columns)：分校； 值 (Values)：加總 - 學費收入</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-34-2"><input type="radio" name="q34" value="2"><span>C. 列 (Rows)：學費收入； 欄 (Columns)：分校； 值 (Values)：項目個數 - 課程類別</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-34-3"><input type="radio" name="q34" value="3"><span>D. 列 (Rows)：分校； 欄 (Columns)：學費收入； 值 (Values)：加總 - 課程類別</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-34">
+                    <div class="exp-title">🔑 正確解答：A</div>
+                    <div>左側垂直排列顯示的屬性應放在「列（Rows）」，上方橫向水平延伸排列顯示的屬性放在「欄（Columns）」，具體計算的數值項則放在「值（Values）」。</div>
+                </div>
+            </div>
+
+            <!-- 第 35 題 -->
+            <div class="question-card" id="q-card-35">
+                <div class="q-header">
+                    <span class="q-num">35</span>
+                    <span>樞紐分析表數據重新整理</span>
+                </div>
+                <div class="q-text">陳老師建立好一個樞紐分析表，統計數據顯示參加「編程學會」的男生有 5 人。此時陳老師在「原始數據表」中，將錯記成男生的張小明性別改為女生。在剛修改完，但尚未點擊任何其他按鈕前，樞紐分析表顯示的編程學會男生人數會：</div>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-35-0"><input type="radio" name="q35" value="0" required><span>A. 立即自動減少為 4 人</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-35-1"><input type="radio" name="q35" value="1"><span>B. 依然維持顯示 5 人</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-35-2"><input type="radio" name="q35" value="2"><span>C. 樞紐分析表會出錯並顯示 #REF!</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-35-3"><input type="radio" name="q35" value="3"><span>D. 樞紐分析表會自動關閉</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-35">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>樞紐分析表本身在預設情況下，不會與原始資料進行實時自動同步。用戶在修改原始數據後，必須點選「重新整理（Refresh）」按鈕，樞紐分析表才會重新讀取數據並更新。</div>
+                </div>
+            </div>
+
+            <!-- 第 36 題 -->
+            <div class="question-card" id="q-card-36">
+                <div class="q-header">
+                    <span class="q-num">36</span>
+                    <span>COUNTIF 萬用字元篩選</span>
+                </div>
+                <div class="q-text">在 B1 儲存格輸入公式 <code>=COUNTIF(A2:A5, "陳*")</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td></tr>
+                    <tr><td>1</td><td>學員名</td></tr>
+                    <tr><td>2</td><td>陳大文</td></tr>
+                    <tr><td>3</td><td>張小明</td></tr>
+                    <tr><td>4</td><td>陳小明</td></tr>
+                    <tr><td>5</td><td>李美美</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-36-0"><input type="radio" name="q36" value="0" required><span>A. 1</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-36-1"><input type="radio" name="q36" value="1"><span>B. 2</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-36-2"><input type="radio" name="q36" value="2"><span>C. 3</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-36-3"><input type="radio" name="q36" value="3"><span>D. #VALUE!</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-36">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>在試算表公式中，星號 `*` 代表零個或多個任意字元。條件 `"陳*"` 代表所有以 "陳" 字開頭的名字（即「陳大文」與「陳小明」），一共為 2 個儲存格。</div>
+                </div>
+            </div>
+
+            <!-- 第 37 題 -->
+            <div class="question-card" id="q-card-37">
+                <div class="q-header">
+                    <span class="q-num">37</span>
+                    <span>COUNTA 函數</span>
+                </div>
+                <div class="q-text">在 B1 輸入公式 <code>=COUNTA(A2:A4)</code>，會得到什麼結果？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td></tr>
+                    <tr><td>1</td><td>數據</td></tr>
+                    <tr><td>2</td><td>100</td></tr>
+                    <tr><td>3</td><td>暫缺</td></tr>
+                    <tr><td>4</td><td>200</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-37-0"><input type="radio" name="q37" value="0" required><span>A. 1</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-37-1"><input type="radio" name="q37" value="1"><span>B. 2</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-37-2"><input type="radio" name="q37" value="2"><span>C. 3</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-37-3"><input type="radio" name="q37" value="3"><span>D. 0</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-37">
+                    <div class="exp-title">🔑 正確解答：C</div>
+                    <div>COUNTA 函數會計算範圍內所有「非空儲存格」（Non-empty cells）的數量，無論裡面是數字、文字、布林值還是錯誤值。A2, A3, A4 皆非空白，故結果為 3。而普通的 COUNT 則只會計算數值 (2個)。</div>
+                </div>
+            </div>
+
+            <!-- 第 38 題 -->
+            <div class="question-card" id="q-card-38">
+                <div class="q-header">
+                    <span class="q-num">38</span>
+                    <span>欄列刪除與 #REF! 錯誤</span>
+                </div>
+                <div class="q-text">學生在 B1 儲存格輸入公式 <code>=A1</code>。此時他直接按右鍵「刪除整個 A 欄」。請問原本的 B1 儲存格（此時已變為新的 A1）會顯示什麼錯誤？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td></tr>
+                    <tr><td>1</td><td>5</td><td>8</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-38-0"><input type="radio" name="q38" value="0" required><span>A. 5</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-38-1"><input type="radio" name="q38" value="1"><span>B. 8</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-38-2"><input type="radio" name="q38" value="2"><span>C. #REF!</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-38-3"><input type="radio" name="q38" value="3"><span>D. #VALUE!</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-38">
+                    <div class="exp-title">🔑 正確解答：C</div>
+                    <div>當一個公式所直接參照的儲存格、列或欄被直接「刪除」時，它的參照路徑會徹底遺失，從而返回「無效參照錯誤（#REF!）」。</div>
+                </div>
+            </div>
+
+            <!-- 第 39 題 -->
+            <div class="question-card" id="q-card-39">
+                <div class="q-header">
+                    <span class="q-num">39</span>
+                    <span>巢狀邏輯綜合運算</span>
+                </div>
+                <div class="q-text">在 A1 儲存格輸入公式 <code>=AND(OR(10>20, 5=5), NOT(3>5))</code>，會得到什麼結果？</div>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-39-0"><input type="radio" name="q39" value="0" required><span>A. TRUE</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-39-1"><input type="radio" name="q39" value="1"><span>B. FALSE</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-39-2"><input type="radio" name="q39" value="2"><span>C. #VALUE!</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-39-3"><input type="radio" name="q39" value="3"><span>D. #NAME?</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-39">
+                    <div class="exp-title">🔑 正確解答：A</div>
+                    <div>1. `OR(10>20, 5=5)` 等同於 `OR(FALSE, TRUE)` -> TRUE； 2. `NOT(3>5)` 等同於 `NOT(FALSE)` -> TRUE； 3. `AND(TRUE, TRUE)` -> TRUE。故最終結果為 TRUE。</div>
+                </div>
+            </div>
+
+            <!-- 第 40 題 -->
+            <div class="question-card" id="q-card-40">
+                <div class="q-header">
+                    <span class="q-num">40</span>
+                    <span>XLOOKUP 近似值比對與匹配模式</span>
+                </div>
+                <div class="q-text">某位學生的得分為 75。教師在 B5 輸入 <code>=XLOOKUP(75, A2:A4, B2:B4, "不適用", -1)</code>。已知第五個參數（match_mode）為 -1 代表「精確匹配，若找不到則返回下一個較小的項目」。該生會得到什麼等級？</div>
+                <table class="data-table">
+                    <tr><td>&nbsp;</td><td>A</td><td>B</td></tr>
+                    <tr><td>1</td><td>得分</td><td>等級</td></tr>
+                    <tr><td>2</td><td>0</td><td>C</td></tr>
+                    <tr><td>3</td><td>60</td><td>B</td></tr>
+                    <tr><td>4</td><td>80</td><td>A</td></tr>
+                </table>
+                <ul class="options-list">
+                    <li class="option-item"><label class="option-label" id="label-40-0"><input type="radio" name="q40" value="0" required><span>A. A</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-40-1"><input type="radio" name="q40" value="1"><span>B. B</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-40-2"><input type="radio" name="q40" value="2"><span>C. C</span></label></li>
+                    <li class="option-item"><label class="option-label" id="label-40-3"><input type="radio" name="q40" value="3"><span>D. 不適用</span></label></li>
+                </ul>
+                <div class="explanation-box" id="exp-40">
+                    <div class="exp-title">🔑 正確解答：B</div>
+                    <div>因為 75 在得分範圍 A2:A4 中找不到完全一致的數值，而參數 -1 指示返回下一個較小的值（即 60）。60 對應的等級為 "B"。</div>
+                </div>
+            </div>
+
+            <!-- 題目區域結束 -->
+
+            <div class="submit-area">
+                <button type="submit" class="btn-submit">提交測驗</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // 本地前端評分與分析數據
+        const questionsData = [
+            { num: 1, func: "SUM / AVERAGE / MAX / MIN / COUNT 函數", ans: 1 },
+            { num: 2, func: "SUM / AVERAGE / MAX / MIN / COUNT 函數", ans: 0 },
+            { num: 3, func: "SUM / AVERAGE / MAX / MIN / COUNT 函數", ans: 2 },
+            { num: 4, func: "SUM / AVERAGE / MAX / MIN / COUNT 函數", ans: 0 },
+            { num: 5, func: "SUM / AVERAGE / MAX / MIN / COUNT 函數", ans: 1 },
+            { num: 6, func: "條件加總與計數 (SUMIF / COUNTIF / COUNTA)", ans: 1 },
+            { num: 7, func: "條件加總與計數 (SUMIF / COUNTIF / COUNTA)", ans: 1 },
+            { num: 8, func: "數值進位與運算 (ROUND / INT / SQRT)", ans: 2 },
+            { num: 9, func: "數值進位與運算 (ROUND / INT / SQRT)", ans: 0 },
+            { num: 10, func: "數值進位與運算 (ROUND / INT / SQRT)", ans: 1 },
+            { num: 11, func: "邏輯判斷與巢狀邏輯 (IF / AND / OR / NOT)", ans: 1 },
+            { num: 12, func: "邏輯判斷與巢狀邏輯 (IF / AND / OR / NOT)", ans: 0 },
+            { num: 13, func: "邏輯判斷與巢狀邏輯 (IF / AND / OR / NOT)", ans: 0 },
+            { num: 14, func: "邏輯判斷與巢狀邏輯 (IF / AND / OR / NOT)", ans: 1 },
+            { num: 15, func: "文字字串處理 (LEFT / RIGHT / MID / LEN / FIND)", ans: 0 },
+            { num: 16, func: "文字字串處理 (LEFT / RIGHT / MID / LEN / FIND)", ans: 1 },
+            { num: 17, func: "文字字串處理 (LEFT / RIGHT / MID / LEN / FIND)", ans: 2 },
+            { num: 18, func: "文字字串處理 (LEFT / RIGHT / MID / LEN / FIND)", ans: 1 },
+            { num: 19, func: "文字字串處理 (LEFT / RIGHT / MID / LEN / FIND)", ans: 1 },
+            { num: 20, func: "數值排序與隨機數 (RANK / RAND)", ans: 0 },
+            { num: 21, func: "數值排序與隨機數 (RANK / RAND)", ans: 0 },
+            { num: 22, func: "進位資料搜尋比對 (XLOOKUP)", ans: 1 },
+            { num: 23, func: "進位資料搜尋比對 (XLOOKUP)", ans: 3 },
+            { num: 24, func: "數值進位與運算 (ROUND / INT / SQRT)", ans: 1 },
+            { num: 25, func: "SUM / AVERAGE / MAX / MIN / COUNT 函數", ans: 1 },
+            { num: 26, func: "試算表基本概念與錯誤處理", ans: 0 },
+            { num: 27, func: "文字字串處理 (LEFT / RIGHT / MID / LEN / FIND)", ans: 0 },
+            { num: 28, func: "邏輯判斷與巢狀邏輯 (IF / AND / OR / NOT)", ans: 0 },
+            { num: 29, func: "數值進位與運算 (ROUND / INT / SQRT)", ans: 1 },
+            { num: 30, func: "條件加總與計數 (SUMIF / COUNTIF / COUNTA)", ans: 2 },
+            { num: 31, func: "相對、絕對與混合參照鎖定 ($ 鎖定)", ans: 0 },
+            { num: 32, func: "相對、絕對與混合參照鎖定 ($ 鎖定)", ans: 2 },
+            { num: 33, func: "相對、絕對與混合參照鎖定 ($ 鎖定)", ans: 1 },
+            { num: 34, func: "數據透視表/樞紐分析表 (Pivot Table)", ans: 0 },
+            { num: 35, func: "數據透視表/樞紐分析表 (Pivot Table)", ans: 1 },
+            { num: 36, func: "條件加總與計數 (SUMIF / COUNTIF / COUNTA)", ans: 1 },
+            { num: 37, func: "條件加總與計數 (SUMIF / COUNTIF / COUNTA)", ans: 2 },
+            { num: 38, func: "試算表基本概念與錯誤處理", ans: 2 },
+            { num: 39, func: "邏輯判斷與巢狀邏輯 (IF / AND / OR / NOT)", ans: 0 },
+            { num: 40, func: "進位資料搜尋比對 (XLOOKUP)", ans: 1 }
+        ];
+
+        document.getElementById('quiz-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let score = 0;
+            const functionErrors = {};
+            const totalQuestionsByFunc = {};
+
+            // 分門別類統計題目總數
+            questionsData.forEach(q => {
+                if(!totalQuestionsByFunc[q.func]) {
+                    totalQuestionsByFunc[q.func] = 0;
+                    functionErrors[q.func] = 0;
+                }
+                totalQuestionsByFunc[q.func]++;
+            });
+
+            // 逐題計分
+            questionsData.forEach((q, idx) => {
+                const qNum = q.num;
+                const selectedOpt = document.querySelector(`input[name="q${qNum}"]:checked`);
+                const isCorrect = selectedOpt && parseInt(selectedOpt.value) === q.ans;
+                
+                // 顯示詳盡解說盒
+                const expBox = document.getElementById(`exp-${qNum}`);
+                expBox.classList.add('show');
+
+                // 為選項動態標色
+                for (let oIdx = 0; oIdx < 4; oIdx++) {
+                    const label = document.getElementById(`label-${qNum}-${oIdx}`);
+                    label.classList.remove('option-correct', 'option-incorrect');
+                    
+                    if (oIdx === q.ans) {
+                        label.classList.add('option-correct');
+                    } else if (selectedOpt && parseInt(selectedOpt.value) === oIdx) {
+                        label.classList.add('option-incorrect');
+                    }
+                }
+
+                if (isCorrect) {
+                    score++;
+                } else {
+                    functionErrors[q.func]++;
+                }
+            });
+
+            // 更新分數儀表板
+            document.getElementById('score-val').innerText = score;
+            const resultCard = document.getElementById('result-card');
+            resultCard.style.display = 'block';
+            
+            // 平滑滾動至結果頂端
+            window.scrollTo({ top: resultCard.offsetTop - 50, behavior: 'smooth' });
+
+            // 生成弱點診斷報告
+            const analysisDiv = document.getElementById('weakness-analysis');
+            analysisDiv.innerHTML = '<div class="feedback-title">🎯 知識掌握度與弱點診斷報告：</div>';
+            
+            const weaknesses = [];
+            const strengths = [];
+
+            for (const func in totalQuestionsByFunc) {
+                const total = totalQuestionsByFunc[func];
+                const errors = functionErrors[func];
+                const correctCount = total - errors;
+                const accuracy = (correctCount / total) * 100;
+
+                if (accuracy < 70) {
+                    weaknesses.push({ func, accuracy: accuracy.toFixed(0), correct: correctCount, total });
+                } else {
+                    strengths.push({ func, accuracy: accuracy.toFixed(0), correct: correctCount, total });
+                }
+            }
+
+            let feedbackHTML = '<ul class="topic-list">';
+            
+            if (weaknesses.length > 0) {
+                feedbackHTML += '<li style="margin-top:0.5rem;"><strong>⚠️ 需要加強的知識領域：</strong></li>';
+                weaknesses.forEach(w => {
+                    feedbackHTML += `<li><span class="badge-warning">待加強</span> <strong>${w.func}</strong>：正確率僅 ${w.accuracy}%（答對 ${w.correct} 題 / 共 ${w.total} 題）。</li>`;
+                });
+            } else {
+                feedbackHTML += '<li>🌟 太棒了！您對所有的核心試算表函數概念皆已達到極高水準的掌握！</li>';
+            }
+
+            if (strengths.length > 0) {
+                feedbackHTML += '<li style="margin-top: 1.5rem;"><strong>✅ 掌握度優良的知識領域：</strong></li>';
+                strengths.forEach(s => {
+                    feedbackHTML += `<li><span class="badge-success">掌握優良</span> <strong>${s.func}</strong>：正確率達 ${s.accuracy}%（答對 ${s.correct} 題 / 共 ${s.total} 題）。</li>`;
+                });
+            }
+
+            feedbackHTML += '</ul>';
+            analysisDiv.innerHTML += feedbackHTML;
+
+            // 提交後鎖定所有單選框避免二次更改
+            const inputs = document.querySelectorAll('input[type="radio"]');
+            inputs.forEach(input => input.disabled = true);
+            const submitBtn = document.querySelector('.btn-submit');
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.5';
+            submitBtn.style.cursor = 'not-allowed';
+            submitBtn.innerText = '測驗已提交評分';
+        });
+    </script>
+</body>
+</html>
